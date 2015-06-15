@@ -605,7 +605,7 @@ bignum genrandomprime(int len){
 		 // printf("continueing\n");
 		 continue;
 		 }
-		 if(millerrabin(ran,10)==1)
+		 if(millerrabin(ran,2)==1)
 		 	return ran;
 
 		 ran = add(ran,PRIME_PRODUCT);
@@ -622,11 +622,14 @@ bignum multmod(bignum a, bignum b, bignum n){
 }
 void print(bignum c){
 	int i , j , k;
-	printf("(%d)",c.signum );
+    if(c.signum==-1)
+	printf("-" );
+    if(c.signum==0)
+        printf("0");
 	for(i = 0 ; i < c.length ; i++)
 		printf("%d",c.mag[i] );
 
-	printf("\n\n");
+	printf("\n");
 }
 
 int coprime(bignum a , bignum b){
@@ -644,29 +647,29 @@ int coprime(bignum a , bignum b){
 void keygen(bignum *n,bignum *e, bignum *d,int length){
 	bignum ONE = create("1");
 	bignum p = genrandomprime(length/2);
-	printf("genrated p \n");
-	print(p);
+//	printf("genrated p \n");
+//	print(p);
 	bignum q = genrandomprime(length/2);
-	printf("genrated q \n");
-	print(q);
+//	printf("genrated q \n");
+//	print(q);
 	*n = mul(p,q);
-	printf("N generated\n");
-	print(*n);
+//	printf("N generated\n");
+//	print(*n);
 	bignum phi = mul(sub(p,ONE), sub(q,ONE));
-	printf("Phi generated\n");
-	print(phi);
+//	printf("Phi generated\n");
+//	print(phi);
 	// *d = reminder(genrandom(length), *n);
 	do{
-		//*e = reminder(genrandomprime(15),phi);
-		*e = genrandomprime(10);
+		*e = reminder(genrandom(256),phi);
+		//*e = genrandomprime(10);
 		
 	}while( coprime (phi,*e)!=1);
-	printf("genrated e \n");
-	print(*e);
+//	printf("genrated e \n");
+//	print(*e);
 
 	*d = inverse(*e , phi);
-	printf("d generated\n");
-	print(*d);
+//	printf("d generated\n");
+//	print(*d);
 
 
 	// while(comparemag(multmod(*e , *d , phi),ONE)!=0){
@@ -735,36 +738,30 @@ bignum RSADecrypt(bignum c , bignum d , bignum n){
 void testRSA(int length){
 	// bignum n = create("3233"), e=create("17") , d=create("2753") ;
 	bignum n , e , d ;
+    printf("generating primes P and Q\n");
 	keygen(&n , &e , &d, length);
 
-	printf("====================\n");
+	printf("\n\nValue of public key (e , n ) \n");
+    print(e);
 	print(n);
-	printf("====================\n");
-	print(e);
-	printf("====================\n");
+	printf("\n\nValue of Private key ( d , n ) \n");
 	print(d);
-	printf("====================\n");
-	bignum message = genrandom(10);
+    print(n);
 
-	printf("Random generated messege \n");
+	bignum message = reminder(genrandom(512),n);
+
+	printf("\n\nRandom generated messege \n");
 	print(message);
 
 	bignum cipher=RSAEncrypt(message , e , n);
-	printf("CIpher text generation\n");
+	printf("\n\nCIpher text \n");
 	print(cipher);
 
 	message = RSADecrypt(cipher , d , n);
-	printf("Cipher Decrypted\n");
+	printf("\n\nCipher Decrypted\n");
 	print(message);
 }
 int main(){
-	bignum ONE = create("1");
-	bignum a = create("17");
-	bignum b = create("3120");
-	bignum z = inverse(a , b );
-	bignum n , e , d ;
 	testRSA(512);
-	// print(z);
-	// print(e);
 	return 0;
 }
