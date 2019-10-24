@@ -16,6 +16,7 @@ bignum sub(bignum , bignum);
 bignum mult(bignum , bignum);
 bignum mulbyint(bignum , int);
 bignum mulby10(bignum , int);
+bignum mulby5(bignum , int);
 bignum reminder(bignum , bignum);
 int comparemag(bignum , bignum);
 void bypass(int** , int*);
@@ -268,12 +269,39 @@ bignum sub(bignum a , bignum b){
 
 /**
    * This method is used to multiply structure variable with 10 based on the times. 
-   * @param a This is the first paramter to mulby10 method
+   * @param a This is the first paramter to 
+  method
    * @param times This is the second paramter to mulby10 method
    * @return bignum This function is used to multiply structure variable by 10 according to the times.
    * @like a=18 and times =2 result= 1800
    */
 bignum mulby10(bignum a, int times){
+    bignum *c = (bignum*)malloc(sizeof(bignum));
+    int *mag = (int*)malloc(sizeof(int)*(a.length+times));
+    int len = a.length+times;
+    int i = 0;
+    for(i = 0 ; i < a.length ; i++)
+        mag[i] = a.mag[i];
+
+    while(times--)
+        mag[i++] = 0;
+
+    c->mag = mag;
+    c->length = len;
+    c->signum = a.signum;
+    return *c;
+
+}
+
+/**
+   * This method is used to multiply structure variable with 10 based on the times. 
+   * @param a This is the first paramter to 
+  method
+   * @param times This is the second paramter to mulby5 method
+   * @return bignum This function is used to multiply structure variable by 10 according to the times.
+   * @like a=18 and times =2 result= 1800
+   */
+bignum mulby5(bignum a, int times){
     bignum *c = (bignum*)malloc(sizeof(bignum));
     int *mag = (int*)malloc(sizeof(int)*(a.length+times));
     int len = a.length+times;
